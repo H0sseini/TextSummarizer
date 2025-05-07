@@ -2,7 +2,7 @@
 # Ignore model files but allow folder
 /backend/models/*
 !/backend/models/
-
+!/backend/models/modelcheck.file
 
 # Ignore temporary or compiled files
 __pycache__/
