@@ -1,0 +1,44 @@
+<<<<<<< HEAD
+# Ignore model files but allow folder
+/backend/models/*
+!/backend/models/
+
+
+# Ignore temporary or compiled files
+__pycache__/
+*.pyc
+
+# Ignore document files
+*.txt
+*.pdf
+*.docx
+
+# Ignore environment or OS-specific files
+.env
+.DS_Store
+=======
+# Ignore model files but allow folder
+/backend/models/*
+!/backend/models/
+!/backend/models/config.json
+!/backend/models/tokenizer_config.json
+!/backend/models/vocab.json
+!/backend/models/merges.txt
+
+# Exclude large model file
+/backend/models/model.safetensors
+
+# Ignore temporary or compiled files
+__pycache__/
+*.pyc
+
+# Ignore document files
+*.txt
+*.pdf
+*.docx
+
+# Ignore environment or OS-specific files
+.env
+.DS_Store
+>>>>>>> bca213b09fa90448d1153998b81aecdd32eccba0
+Thumbs.db

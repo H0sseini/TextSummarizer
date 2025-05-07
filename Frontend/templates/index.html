@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TextSummarizer</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="icon" href="/static/favicon.png" type="image/png">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <img src="/static/logo.png" alt="Logo" class="logo">
+            <span class="title">TextSummarizer</span>
+            <h1>TextSummarizer</h1>
+        </header>
+
+        <form id="summary-form" action="/summarize" method="post" enctype="multipart/form-data">
+            <label for="text_input">Paste your text here:</label>
+            <textarea name="text_input" id="text_input" rows="10" placeholder="Paste text..."></textarea>
+
+            <label for="file">Or upload a file:</label>
+            <input type="file" name="file" id="file" accept=".pdf,.docx,.txt,.md">
+            <br>
+            <label for="mode">Select summary length:</label>
+            <select name="mode" id="mode">
+                <option value="short">Short</option>
+                <option value="medium" selected>Medium</option>
+                <option value="detailed">Detailed</option>
+            </select>
+
+            <label for="summary_type">Summary type:</label>
+            <select name="summary_type" id="summary_type">
+                <option value="abstractive" selected>Abstractive</option>
+                <option value="extractive">Extractive</option>
+            </select>
+
+            <button type="submit">Summarize</button>
+        </form>
+
+        <div id="loading" class="hidden">Summarizing, please wait...</div>
+        <div id="error" class="hidden"></div>
+
+        {% if result %}
+            <h2>Summary</h2>
+            <textarea id="summaryText" readonly>{{ result }}</textarea>
+            <button id="copyBtn">Copy to Clipboard</button>
+        {% endif %}
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('summary-form');
+        const loadingBox = document.getElementById('loading');
+        const errorBox = document.getElementById('error');
+        const summaryText = document.getElementById('summaryText');
+        const copyButton = document.getElementById('copyBtn');
+
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                // Don't prevent default - let the form submit naturally
+                loadingBox.classList.remove('hidden');
+                errorBox.classList.add('hidden');
+                
+                const fileInput = document.getElementById('file');
+                const textInput = document.getElementById('text_input');
+                
+                // Basic validation
+                if (!fileInput.files[0] && !textInput.value.trim()) {
+                    e.preventDefault(); // Now prevent the default
+                    errorBox.textContent = "❗ Please provide a file or paste some text.";
+                    errorBox.classList.remove('hidden');
+                    loadingBox.classList.add('hidden');
+                    return false;
+                }
+                
+                // Let the form submit normally to the server
+                return true;
+            });
+        }
+
+        if (copyButton && summaryText) {
+            copyButton.addEventListener('click', function() {
+                navigator.clipboard.writeText(summaryText.value).then(function() {
+                    copyButton.textContent = "✅ Copied!";
+                    setTimeout(function() {
+                        copyButton.textContent = "Copy to Clipboard";
+                    }, 2000);
+                }).catch(function(err) {
+                    alert("Failed to copy: " + err);
+                });
+            });
+        }
+    });
+    </script>
+</body>
+</html>
