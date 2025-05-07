@@ -1,6 +1,6 @@
 <<<<<<< HEAD
 # Ignore model files but allow folder
-/backend/models/bart-large-cnn/model.safetensors
+# /backend/models/bart-large-cnn/model.safetensors
 
 # Ignore temporary or compiled files
 __pycache__/
