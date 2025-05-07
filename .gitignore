@@ -3,6 +3,7 @@
 /backend/models/*
 !/backend/models/
 !/backend/models/modelcheck.file
+!/backend/models/bart-large-cnn/modelcheck.file
 
 # Ignore temporary or compiled files
 __pycache__/
