@@ -4,14 +4,14 @@ Created on Mon Apr 21 15:30:07 2025
 
 @author: H0sseini
 """
-from fastapi import FastAPI, Request, Form, UploadFile, File
+from fastapi import FastAPI, Request, Form, UploadFile, File, HTTPException
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 import sys
 sys.path.insert(1, '../Backend/')
-from main import SummarizationTool
+from main import SummarizationTool, download_bart_large_cnn
 import os
 
 app = FastAPI()
@@ -41,6 +41,11 @@ async def summarize(
     text_input: str = Form(None),
     file: UploadFile = File(None)
 ):
+    
+    if not download_bart_large_cnn():
+        raise HTTPException(status_code=500, 
+                           detail="Model file missing and failed to download.")
+        
     try:
         # Use text input if available
         if text_input and text_input.strip():

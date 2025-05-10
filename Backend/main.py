@@ -15,6 +15,43 @@ from sumy.parsers.plaintext import PlaintextParser
 from sumy.nlp.tokenizers import Tokenizer
 from sumy.summarizers.lex_rank import LexRankSummarizer
 from io import BytesIO
+import requests
+from pathlib import Path
+from huggingface_hub import snapshot_download
+
+
+
+
+def download_bart_large_cnn(local_dir="./backend/models/bart-large-cnn"):
+    print(f"Preparing to download BART-large-CNN model to: {local_dir}")
+
+    if os.path.exists(local_dir) and os.path.isdir(local_dir):
+        # Check if model files already exist
+        expected_files = [
+            "config.json", "generation_config.json", "pytorch_model.bin",
+            "tokenizer_config.json", "tokenizer.json", "vocab.json", "merges.txt"
+        ]
+        if all(os.path.isfile(os.path.join(local_dir, f)) for f in expected_files):
+            print("✔ Model files already present. Skipping download.")
+            return True
+        else:
+            print("⚠ Some model files are missing. Redownloading...")
+
+    # Download the full snapshot (model and tokenizer files)
+    try:
+        snapshot_download(
+            repo_id="facebook/bart-large-cnn",
+            local_dir=local_dir,
+            local_dir_use_symlinks=False  # Make sure files are copied directly
+        )
+    
+        print("✅ Download complete. Model is ready for use.")
+        return True
+    except Exception as e:
+        print(f"[ERROR] Failed to download the model: {e}")
+        return False
+    
+
 
 try:
     import nltk
