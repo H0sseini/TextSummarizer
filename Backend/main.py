@@ -15,21 +15,20 @@ from sumy.parsers.plaintext import PlaintextParser
 from sumy.nlp.tokenizers import Tokenizer
 from sumy.summarizers.lex_rank import LexRankSummarizer
 from io import BytesIO
-import requests
-from pathlib import Path
 from huggingface_hub import snapshot_download
 
 
 
 
-def download_bart_large_cnn(local_dir="./backend/models/bart-large-cnn"):
+def download_bart_large_cnn(local_dir="./models/bart-large-cnn"):
     print(f"Preparing to download BART-large-CNN model to: {local_dir}")
 
     if os.path.exists(local_dir) and os.path.isdir(local_dir):
         # Check if model files already exist
         expected_files = [
-            "config.json", "generation_config.json", "pytorch_model.bin",
-            "tokenizer_config.json", "tokenizer.json", "vocab.json", "merges.txt"
+            "config.json", "generation_config.json", "model.safetensors",
+            "tokenizer_config.json", "tokenizer.json", "vocab.json",
+            "merges.txt", "special_tokens_map.json"
         ]
         if all(os.path.isfile(os.path.join(local_dir, f)) for f in expected_files):
             print("✔ Model files already present. Skipping download.")

@@ -42,7 +42,7 @@ async def summarize(
     file: UploadFile = File(None)
 ):
     
-    if not download_bart_large_cnn():
+    if not download_bart_large_cnn(local_dir='../Backend/models/bart-large-cnn'):
         raise HTTPException(status_code=500, 
                            detail="Model file missing and failed to download.")
         
