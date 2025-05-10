@@ -172,8 +172,7 @@ class SummarizationTool:
     def summarize_first_level(self, text):
         text = self.clean_text(text)
         chunks = self.split_text(text)
-        summaries = self.summarize_chunks(chunks)  # No min/max lengths here
-        #return " ".join(s.strip() for s in summaries if s.strip())
+        summaries = self.summarize_chunks(chunks) 
         return summaries
 
     def summarize_second_level(self, text, max_words):
@@ -254,14 +253,3 @@ class SummarizationTool:
         return self.clean_text(text_input)
 
 
-'''  
-if __name__ == "__main__":
-    summarizer = SummarizationTool()
-   
-    with open("mytext.txt", "r") as f:
-        contents = f.read()
-        #file_path = f"temp_{f.filename}"
-    text = summarizer.extract_text_from_bytes(contents, "mytext.txt")  # or .txt, .docx
-    summary = summarizer.summarize(text, mode="detailed", summary_type="abstractive")
-    print(summary)
-'''
