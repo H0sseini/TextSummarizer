@@ -43,8 +43,15 @@
         {% if result %}
             <h2>Summary</h2>
             <textarea id="summaryText" readonly>{{ result }}</textarea>
-            <button id="copyBtn">Copy to Clipboard</button>
+			<button id="copyBtn">Copy to Clipboard</button>
         {% endif %}
+		
+		<div id="summary-box" class="hidden">
+			<h2>Summary</h2>
+			<textarea id="summaryText1" readonly rows="10" style="width:100%">{{ result }}</textarea>
+			<button id="copyBtn1">Copy to Clipboard</button>
+		</div>
+
     </div>
 
     <script>
@@ -53,6 +60,7 @@
         const loadingBox = document.getElementById('loading');
         const errorBox = document.getElementById('error');
         const summaryText = document.getElementById('summaryText');
+		const summaryText1 = document.getElementById('summaryText1');
         const copyButton = document.getElementById('copyBtn');
 
         if (form) {
@@ -63,6 +71,8 @@
                 
                 const fileInput = document.getElementById('file');
                 const textInput = document.getElementById('text_input');
+				
+				
                 
                 // Basic validation
                 if (!fileInput.files[0] && !textInput.value.trim()) {
@@ -72,7 +82,7 @@
                     loadingBox.classList.add('hidden');
                     return false;
                 }
-                
+                summaryText.value = "⏳ Loading summary..."; // Show temporary loading in textarea
                 // Let the form submit normally to the server
                 return true;
             });

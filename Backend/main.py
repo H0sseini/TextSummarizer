@@ -20,7 +20,7 @@ from huggingface_hub import snapshot_download
 
 
 
-def download_bart_large_cnn(local_dir="./models/bart-large-cnn"):
+def download_bart_large_cnn(local_dir="./backend/models/bart-large-cnn"):
     print(f"Preparing to download BART-large-CNN model to: {local_dir}")
 
     if os.path.exists(local_dir) and os.path.isdir(local_dir):
@@ -172,7 +172,8 @@ class SummarizationTool:
     def summarize_first_level(self, text):
         text = self.clean_text(text)
         chunks = self.split_text(text)
-        summaries = self.summarize_chunks(chunks) 
+        summaries = self.summarize_chunks(chunks)  # No min/max lengths here
+        
         return summaries
 
     def summarize_second_level(self, text, max_words):
@@ -251,5 +252,4 @@ class SummarizationTool:
 
     def extract_text_from_string(self, text_input):
         return self.clean_text(text_input)
-
 

@@ -15,10 +15,14 @@ from main import SummarizationTool, download_bart_large_cnn
 import os
 
 app = FastAPI()
-tool = SummarizationTool()
+if not download_bart_large_cnn(local_dir='../Backend/models/bart-large-cnn'):
+    raise HTTPException(status_code=500, 
+                       detail="Model file missing and failed to download.")
+else:
+    tool = SummarizationTool()
 
 templates = Jinja2Templates(directory="./templates")
-app.mount("/static", StaticFiles(directory="./static"), name="static")
+app.mount("/static", StaticFiles(directory="./templates/static"), name="static")
 
 # Enable CORS for testing
 app.add_middleware(
