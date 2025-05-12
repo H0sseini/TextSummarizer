@@ -10,5 +10,7 @@ There are also three options for the length of the summarized text. For the extr
 
 The summarization is better done when the input text is around 10,000 words. 
 
+  ![image](https://github.com/user-attachments/assets/c6d5d2af-ba98-4918-9889-0123a58a72a6)
+       The model requires 1.6 GB data which will be downloaded the first time. For the next uses, it won’t download data unless it is a necessary update.
+       
 Of course, it is worth noting the AI model makes mistakes so, don’t rely solely on them. 
- 
