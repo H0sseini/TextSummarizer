@@ -10,6 +10,7 @@ __pycache__/
 *.txt
 *.pdf
 *.docx
+!requirements.txt
 
 # Ignore environment or OS-specific files
 .env
