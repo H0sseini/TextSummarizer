@@ -21,11 +21,6 @@ __pycache__/
 __pycache__/
 *.pyc
 
-# Ignore document files
-*.txt
-*.pdf
-*.docx
-
 # Ignore environment or OS-specific files
 .env
 .DS_Store
