@@ -72,7 +72,15 @@ class SummarizationTool:
             "summarization",
             model=self.model,
             tokenizer=self.tokenizer,
-            device=self.device
+            device=self.device,
+            framework="pt",
+            truncation=True,
+            max_length=200,
+            min_length=50,
+            do_sample=False,           # prevents random hallucination
+            repetition_penalty=2.0,    # discourages repeating phrases
+            length_penalty=1.0,        # balances between long/short
+            early_stopping=True
         )
 
         self.MAX_TOKENS = 512
@@ -167,14 +175,22 @@ class SummarizationTool:
     
          
         return summaries
-
+    
+    def remove_junks(self, text):
+        # Removing junks created by the model
+        keywords = ['CNN.com', 'iReporter', 'CNN.com/Travel']
+        full_text = ''.join(text)
+        if (full_text.find(keywords[1]) - full_text.find(keywords[0]) == 21 and
+            full_text.find(keywords[2]) - full_text.find(keywords[0]) == 139):
+            full_text = full_text[:full_text.find(keywords[0])]
+        return full_text
 
     def summarize_first_level(self, text):
         text = self.clean_text(text)
         chunks = self.split_text(text)
         summaries = self.summarize_chunks(chunks)  # No min/max lengths here
         
-        return summaries
+        return self.remove_junks(summaries)
 
     def summarize_second_level(self, text, max_words):
         chunks = self.split_text(text)
@@ -183,7 +199,7 @@ class SummarizationTool:
             min_length=int(max_words * 0.6),
             max_length=max_words
         )
-        return " ".join(s.strip() for s in summaries if s.strip())
+        return self.remove_junks(summaries)
 
     def extractive_summarize(self, text, num_sentences=5):
         parser = PlaintextParser.from_string(text, Tokenizer("english"))
@@ -203,11 +219,17 @@ class SummarizationTool:
             if word_count <= max_words:
                 return first_summary
             else:
-                try:
-                    return self.summarize_second_level(first_summary, max_words)
-                except Exception as e:
-                    print(f"[Final Summary] Error: {e}")
-                    return first_summary
+                while word_count > max_words:
+                    try:
+                        final_summary = self.summarize_second_level(first_summary, max_words)
+                        word_count = len(final_summary.split())
+                        first_summary = final_summary
+                        print(final_summary)
+                    
+                    except Exception as e:
+                        print(f"[Final Summary] Error: {e}")
+                        return first_summary
+                return final_summary
         except Exception as e:
             print(f"[Summarization] Error: {e}")
             # Fallback to extractive summarization if abstractive fails
