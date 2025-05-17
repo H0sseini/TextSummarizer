@@ -61,10 +61,8 @@ If files are missing, the backend will automatically prompt download.
 
 ### 📦 Option A: Use the launcher (Windows only)
 
-Double-click the `run_app.bat` file to start the backend and open the app on:
-```
-http://127.0.0.1:8000
-```
+Double-click the `run_app.bat` and a webpage will be opened that loads the app after a while for you.
+
 
 ### 🖥️ Option B: Manual run
 
