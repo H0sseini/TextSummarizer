@@ -111,5 +111,5 @@ This project is licensed under the MIT License. See `LICENSE` file for details.
        
 Of course, it is worth noting the AI model makes mistakes so, don’t rely solely on it.
 
-Thank you! 🚀
+Have fun! 🚀
 
