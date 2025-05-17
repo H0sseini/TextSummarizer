@@ -6,7 +6,7 @@ This tool will help you to summarize texts (.pdf, .docx, .txt, .md, or input tex
   
   •	<b>Extractive:</b> which extracts key sentences.
   
-There are also three options for the length of the summarized text. For the extractive method, the model returns up to 5 sentences if you select the short version and up to 10 sentences otherwise. For the abstractive type, the model returns summarized text with up to 150, 300, and 600 words for the summary lengths short, medium, and detailed, respectively (at least tries to comply to those limits). The choice between using CPU or GPU is done automatically based on each system it is running on.
+There are also between two to three options for the length of the summarized text according to the selected summarization method. For the extractive method, the model returns up to 5 sentences if you select the short version and up to 10 sentences otherwise. For the abstractive type, the model returns summarized text with up to 150, 300, and 600 words for the summary lengths short, medium, and detailed, respectively (at least tries to comply with those limits). The choice between using CPU or GPU is done automatically based on each system it is running on.
 
 The summarization is better done when the input text is around 10,000 words. 
 
