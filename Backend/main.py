@@ -224,7 +224,6 @@ class SummarizationTool:
                         final_summary = self.summarize_second_level(first_summary, max_words)
                         word_count = len(final_summary.split())
                         first_summary = final_summary
-                        print(final_summary)
                     
                     except Exception as e:
                         print(f"[Final Summary] Error: {e}")
