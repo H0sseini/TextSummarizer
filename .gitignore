@@ -1,0 +1,30 @@
+<<<<<<< HEAD
+# Ignore model files but allow folder
+/app/models/bart-large-cnn/model.safetensors
+
+# Ignore temporary or compiled files
+__pycache__/
+*.pyc
+
+# Ignore document files
+*.txt
+*.pdf
+*.docx
+!requirements.txt
+!Dockerfile.txt
+
+
+
+# Block logs or cache files
+*.log
+*.tmp
+.cache/
+
+# Ignore environment or OS-specific files
+.env
+.DS_Store
+=======
+
+
+>>>>>>> bca213b09fa90448d1153998b81aecdd32eccba0
+Thumbs.db

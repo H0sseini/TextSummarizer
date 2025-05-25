@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.bin
+*.pdf
+*.docx
+*.txt
+!requirements.txt
+app/models/bart-large-cnn/.cache/

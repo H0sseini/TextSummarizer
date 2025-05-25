@@ -1,0 +1,11 @@
+python-multipart
+fastapi
+uvicorn
+transformers
+torch
+datasets
+python-docx
+PyMuPDF
+sumy
+nltk
+huggingface_hub
