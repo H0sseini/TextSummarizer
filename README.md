@@ -107,7 +107,7 @@ This project is licensed under the MIT License. See `LICENSE` file for details.
 
 📖 The summarization is better done when the input text is around 10,000 words. 
 
-⚠️ The model requires 1.6 GB data which will be downloaded the first time. For the next uses, it won’t download data unless it is a necessary update.
+⚠️ The model requires 1.6 GB data which will be downloaded the first time. For the next uses, it won’t download data unless it is a necessary update. If your system does not have Python or the repo's dependencies (such as torch, datasets, fastapi, etc.), the installation process may require downloading around 5.0 GB of data for the first time.  
        
 Of course, it is worth noting the AI model makes mistakes so, don’t rely solely on it.
 
