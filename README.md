@@ -28,7 +28,7 @@ A local document summarization tool built with FastAPI and Hugging Face's BART m
 ### 1. Clone the repository
 
 ```
-git clone https://github.com/<your_username>/TextSummarizer.git
+git clone https://github.com/H0sseini/TextSummarizer.git
 cd TextSummarizer
 ```
 
@@ -50,7 +50,7 @@ pip install -r requirements.txt
 Place the required BART model files in the following folder:
 
 ```
-./Backend/models/bart-large-cnn/
+./app/models/bart-large-cnn/
 ```
 
 If files are missing, the backend will automatically prompt download.
@@ -71,6 +71,13 @@ From the project directory:
 ```
 cd Frontend
 uvicorn app:app --reload
+```
+
+or if uvicorn's path is not added:
+
+```
+cd Frontend
+python -m uvicorn app:app --reload
 ```
 
 Then open your browser and go to:
@@ -107,7 +114,7 @@ This project is licensed under the MIT License. See `LICENSE` file for details.
 
 📖 The summarization is better done when the input text is around 10,000 words. 
 
-⚠️ The model requires 1.6 GB data which will be downloaded the first time. For the next uses, it won’t download data unless it is a necessary update. If your system does not have Python or the repo's dependencies (such as torch, datasets, fastapi, etc.), the installation process may require downloading around 5.0 GB of data for the first time.  
+⚠️ The model requires 1.6 GB data which will be downloaded the first time. For the next uses, it won’t download data unless it is a necessary update. If your system does not have Python or the repo's dependencies (such as torch, datasets, fastapi, etc.), the installation process may require downloading an additional of 3.0 GB of data for the first time.  
        
 Of course, it is worth noting the AI model makes mistakes so, don’t rely solely on it.
 
