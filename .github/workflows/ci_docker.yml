@@ -26,7 +26,7 @@ jobs:
         pip install -r requirements.txt
 
     - name: Run basic check (example)
-      run: python -c "print('App setup is working ✅')"
+      run: python -c "from app.main import SummarizationTool; tool = SummarizationTool(); print('✅ Ready!')"
 
   docker:
     runs-on: ubuntu-22.04
