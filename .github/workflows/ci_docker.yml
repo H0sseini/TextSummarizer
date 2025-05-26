@@ -28,7 +28,7 @@ jobs:
       run: python -c "print('App setup is working ✅')"
 
   docker:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs: build
     if: github.ref == 'refs/heads/main'
 
