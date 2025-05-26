@@ -14,8 +14,7 @@ where  python uvicorn >nul 2>nul || (
     exit /b 1
 )
 
-:: Change to the frontend directory
-cd /d "%~dp0Frontend"
+:: Starting the project
 echo Starting TextSummarizer...
 
 :: Launch browser
