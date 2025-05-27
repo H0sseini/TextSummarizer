@@ -116,7 +116,7 @@ This project is licensed under the MIT License. See `LICENSE` file for details.
 
 ⚠️ The model requires 1.6 GB data which will be downloaded the first time. For the next uses, it won’t download data unless it is a necessary update. If your system does not have Python or the repo's dependencies (such as torch, datasets, fastapi, etc.), the installation process may require downloading an additional 3.0 GB of data for the first time.  
        
-For now, the code adds some faulty space between characters of some of the words due to the method of summarization I have used. I'll try to overcome this fault but overall, the output text is readable.
+For now, the code adds some faulty spaces between characters of some of the words due to the method of summarization I have used. I'll try to overcome this fault but overall, the output text is readable.
 
 Of course, it is worth noting the AI model makes mistakes so, don’t rely solely on it.
 
