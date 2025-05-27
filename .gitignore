@@ -18,6 +18,7 @@ __pycache__/
 # Block logs or cache files
 *.log
 *.tmp
+*.bin
 .cache/
 
 # Ignore environment or OS-specific files
