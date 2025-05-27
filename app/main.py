@@ -92,6 +92,47 @@ class SummarizationTool:
             "detailed": 600
         }
 
+    def find_char(self, text, character):
+        # finding punctuation marks to make the output cleaner
+        indices = []
+        for index, letter in enumerate(text):
+            if letter == character:
+                indices.append(index)
+        return indices
+    
+    def smart_join(self, text):
+        # Adding space after each punctuation mark if it is not included yet    
+        punctuations = [".", "?", "!", ",", ";", ":"]
+        vicinity_long = 20 #checking links around punctuations
+        vicinity_short = 4
+        link_check = ["//", "http", "https"]
+        for letter in punctuations:
+            index = self.find_char(text, letter)
+            if index:
+                for number in index:
+                    try:
+                        if text[number+1]!=" ":
+                            try:
+                                clipped_text = text[number-vicinity_long:number+vicinity_long]
+                                if bool(set(link_check) & set(clipped_text)):
+                                    pass
+                                else:
+                                    text = text[:number+1] + " " + text[number+1:]
+                            except:
+                                try:
+                                    clipped_text = text[number-vicinity_short:number+vicinity_short]
+                                    if bool(set(link_check) & set(clipped_text)):
+                                        pass
+                                    else:
+                                        text = text[:number+1] + " " + text[number+1:]
+                                except:
+                                    pass
+                                    
+                                    
+                    except:
+                        pass
+        return text
+        
     def clean_text(self, text):
         text = re.sub(r'\$.*?\$', '', text)
         text = re.sub(r'\\[a-zA-Z]+', '', text)
@@ -180,6 +221,7 @@ class SummarizationTool:
         # Removing junks created by the model
         keywords = ['CNN.com', 'iReporter', 'CNN.com/Travel',   'Samaritans', 
                     'www.samaritans.org', 'For confidential support']
+        #full_text = self.smart_join(text)
         full_text = ''.join(text)
         if (full_text.find(keywords[1]) - full_text.find(keywords[0]) == 21 and
             full_text.find(keywords[2]) - full_text.find(keywords[0]) == 139):
@@ -194,6 +236,7 @@ class SummarizationTool:
         summaries = self.summarize_chunks(chunks)  # No min/max lengths here
         
         return self.remove_junks(summaries)
+        
 
     def summarize_second_level(self, text, max_words):
         chunks = self.split_text(text)
@@ -203,6 +246,7 @@ class SummarizationTool:
             max_length=max_words
         )
         return self.remove_junks(summaries)
+        
 
     def extractive_summarize(self, text, num_sentences=5):
         parser = PlaintextParser.from_string(text, Tokenizer("english"))
@@ -220,7 +264,7 @@ class SummarizationTool:
             max_words = self.mode_lengths.get(mode, 300)
 
             if word_count <= max_words:
-                return first_summary
+                return self.smart_join(first_summary)
             else:
                 while word_count > max_words:
                     try:
@@ -230,8 +274,8 @@ class SummarizationTool:
                     
                     except Exception as e:
                         print(f"[Final Summary] Error: {e}")
-                        return first_summary
-                return final_summary
+                        return self.smart_join(first_summary)
+                return self.smart_join(final_summary)
         except Exception as e:
             print(f"[Summarization] Error: {e}")
             # Fallback to extractive summarization if abstractive fails
