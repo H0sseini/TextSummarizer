@@ -27,6 +27,7 @@ RUN pip install -r requirements.txt
 # Download NLTK resources
 RUN python -c "import nltk; nltk.download('punkt')"
 
+
 # Expose port
 EXPOSE 8000
 
