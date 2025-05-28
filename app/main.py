@@ -100,37 +100,34 @@ class SummarizationTool:
                 indices.append(index)
         return indices
     
-    def smart_join(self, text):
-        # Adding space after each punctuation mark if it is not included yet    
-        punctuations = [".", "?", "!", ",", ";", ":"]
-        vicinity_long = 20 #checking links around punctuations
-        vicinity_short = 4
-        link_check = ["//", "http", "https"]
-        for letter in punctuations:
-            index = self.find_char(text, letter)
-            if index:
-                for number in index:
-                    try:
-                        if text[number+1]!=" ":
-                            try:
-                                clipped_text = text[number-vicinity_long:number+vicinity_long]
-                                if bool(set(link_check) & set(clipped_text)):
-                                    pass
-                                else:
-                                    text = text[:number+1] + " " + text[number+1:]
-                            except:
-                                try:
-                                    clipped_text = text[number-vicinity_short:number+vicinity_short]
-                                    if bool(set(link_check) & set(clipped_text)):
-                                        pass
-                                    else:
-                                        text = text[:number+1] + " " + text[number+1:]
-                                except:
-                                    pass
-                                    
-                                    
-                    except:
-                        pass
+    def add_space_after_punctuation(self, text):
+        # Pattern to find punctuation marks not followed by a space,
+        # excluding cases where it's followed by another punctuation, digit, or letter (likely URL or number)
+        pattern = r'(?<!\w)(?<!\.\w)([.,!?;:])(?=[^\s\d.,!?;:\w])'
+        
+        # This version adds space only after punctuation if the next char is a letter or other symbol (but not digit or . or / etc.)
+        def replacer(match):
+            punct = match.group(1)
+            return punct + ' '
+
+        # Temporarily protect known patterns like URLs and numbers
+        protected_patterns = []
+
+        # Save and replace URLs and domains
+        def protect(match):
+            protected_patterns.append(match.group(0))
+            return f"__PROTECTED{len(protected_patterns)-1}__"
+
+        text = re.sub(r'https?://\S+|www\.\S+|\b\w+\.(com|org|net|edu|gov)\b', protect, text)
+        text = re.sub(r'\b\d+[.,]\d+\b', protect, text)  # Protect decimal numbers like 3.14
+
+        # Add space after punctuation if needed
+        text = re.sub(r'([.,!?;:])(?=\S)', lambda m: m.group(1) + ' ', text)
+
+        # Restore protected patterns
+        for i, original in enumerate(protected_patterns):
+            text = text.replace(f"__PROTECTED{i}__", original)
+
         return text
         
     def clean_text(self, text):
@@ -264,7 +261,8 @@ class SummarizationTool:
             max_words = self.mode_lengths.get(mode, 300)
 
             if word_count <= max_words:
-                return self.smart_join(first_summary)
+                
+                return self.add_space_after_punctuation(first_summary)
             else:
                 while word_count > max_words:
                     try:
@@ -274,8 +272,9 @@ class SummarizationTool:
                     
                     except Exception as e:
                         print(f"[Final Summary] Error: {e}")
-                        return self.smart_join(first_summary)
-                return self.smart_join(final_summary)
+                        return self.add_space_after_punctuation(first_summary)
+                
+                return self.add_space_after_punctuation(final_summary)
         except Exception as e:
             print(f"[Summarization] Error: {e}")
             # Fallback to extractive summarization if abstractive fails
