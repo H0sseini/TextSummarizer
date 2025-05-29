@@ -23,7 +23,7 @@ A local document summarization tool built with FastAPI and Hugging Face's BART m
 
 ---
 
-## Installation
+## Installation (Option A)
 
 ### 1. Clone the repository
 
@@ -32,7 +32,7 @@ git clone https://github.com/H0sseini/TextSummarizer.git
 cd TextSummarizer
 ```
 
-### 2. Create virtual environment (optional but recommended)
+### 2. Create a virtual environment (optional but recommended)
 
 ```
 python -m venv venv
@@ -53,7 +53,33 @@ Place the required BART model files in the following folder:
 ./app/models/bart-large-cnn/
 ```
 
-If files are missing or you would rather that the app handles the download, the backend will automatically download necessary files and put them in the above folder.
+If files are missing or you prefer the app handles the download, the backend will automatically download necessary files and put them in the above folder.
+
+---
+
+## Installation (Option B for Windows users)
+
+### 1. Edit the installation.bat file
+
+If you are using Anaconda comment these lines using ''::'' at the beginning of the lines:
+
+'''
+python -m venv venv
+venv\Scripts\activate
+```
+And uncomment these lines:
+
+'''
+:: conda create --name venv python=3.10
+:: call "C:\Users\[your user name]\Anaconda3\Scripts\activate.bat" venv
+'''
+Change ''[your user name]'' to your user name and ''venv'' to your already existing environment in Anaconda (if you haven't changed the default directory for Anaconda).
+
+If you already have an environment in Python or Anaconda, comment creation lines (''python -m venv venv'' or ''conda create --name venv python=3.10'')
+
+### 2. Run the Installation File
+
+You can just run the installation.bat file, and all necessary jobs will be done.
 
 ---
 
@@ -61,7 +87,7 @@ If files are missing or you would rather that the app handles the download, the 
 
 ### 📦 Option A: Use the launcher (Windows only)
 
-Double-click the `run_app.bat` and a webpage will be opened that loads the app after a while for you.
+Double-click the `run_app.bat` and a webpage will be opened that loads the app after a while for you. If you are using Anaconda you should edit this file and add `call "C:\Users\[your user name]\Anaconda3\Scripts\activate.bat" venv` before `python -m uvicorn frontend.app:app --reload` line and save it before running the file. Remember to replace your real user name with `[your user name]` and your environment name with `venv`. 
 
 
 ### 🖥️ Option B: Manual run
