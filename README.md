@@ -69,15 +69,13 @@ Double-click the `run_app.bat` and a webpage will be opened that loads the app a
 From the project directory:
 
 ```
-cd Frontend
-uvicorn app:app --reload
+uvicorn frontend.app:app --reload
 ```
 
 or if uvicorn's path is not added:
 
 ```
-cd Frontend
-python -m uvicorn app:app --reload
+python -m uvicorn frontend.app:app --reload
 ```
 
 Then open your browser and go to:
