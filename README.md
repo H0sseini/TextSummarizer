@@ -23,7 +23,7 @@ A local document summarization tool built with FastAPI and Hugging Face's BART m
 
 ---
 
-## Installation (Option A)
+## Installation
 
 ### 1. Clone the repository
 
@@ -57,37 +57,11 @@ If files are missing or you prefer the app handles the download, the backend wil
 
 ---
 
-## Installation (Option B for Windows users)
-
-### 1. Edit the installation.bat file
-
-If you are using Anaconda comment these lines using `::` at the beginning of the lines:
-
-```
-python -m venv venv
-venv\Scripts\activate
-```
-And uncomment these lines:
-
-```
-:: conda create --name venv python=3.10
-:: call "C:\Users\[your user name]\Anaconda3\Scripts\activate.bat" venv
-```
-Change `[your user name]` to your user name and `venv` to your already existing environment in Anaconda (if you haven't changed the default directory for Anaconda).
-
-If you already have an environment in Python or Anaconda, comment creation lines (`python -m venv venv` or `conda create --name venv python=3.10`)
-
-### 2. Run the Installation File
-
-You can just run the installation.bat file, and all necessary jobs will be done.
-
----
-
 ## How to Run
 
 ### 📦 Option A: Use the launcher (Windows only)
 
-Double-click the `run_app.bat` and a webpage will be opened that loads the app after a while for you. If you are using Anaconda you should edit this file and add `call "C:\Users\[your user name]\Anaconda3\Scripts\activate.bat" venv` before `python -m uvicorn frontend.app:app --reload` line and save it before running the file. Remember to replace your real user name with `[your user name]` and your environment name with `venv`. 
+Double-click the `run_app.bat` and a webpage will be opened that loads the app after a while for you. 
 
 
 ### 🖥️ Option B: Manual run
@@ -98,7 +72,7 @@ From the project directory:
 uvicorn frontend.app:app --reload
 ```
 
-or if uvicorn's path is not added:
+Or if uvicorn's path is not added:
 
 ```
 python -m uvicorn frontend.app:app --reload
