@@ -61,21 +61,21 @@ If files are missing or you prefer the app handles the download, the backend wil
 
 ### 1. Edit the installation.bat file
 
-If you are using Anaconda comment these lines using ''::'' at the beginning of the lines:
+If you are using Anaconda comment these lines using `::` at the beginning of the lines:
 
-'''
+```
 python -m venv venv
 venv\Scripts\activate
 ```
 And uncomment these lines:
 
-'''
+```
 :: conda create --name venv python=3.10
 :: call "C:\Users\[your user name]\Anaconda3\Scripts\activate.bat" venv
-'''
-Change ''[your user name]'' to your user name and ''venv'' to your already existing environment in Anaconda (if you haven't changed the default directory for Anaconda).
+```
+Change `[your user name]` to your user name and `venv` to your already existing environment in Anaconda (if you haven't changed the default directory for Anaconda).
 
-If you already have an environment in Python or Anaconda, comment creation lines (''python -m venv venv'' or ''conda create --name venv python=3.10'')
+If you already have an environment in Python or Anaconda, comment creation lines (`python -m venv venv` or `conda create --name venv python=3.10`)
 
 ### 2. Run the Installation File
 
