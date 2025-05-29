@@ -14,7 +14,7 @@ echo Creating environment and activating
 python -m venv venv
 venv\Scripts\activate
 :: conda create --name venv python=3.10
-:: call "C:\Users\user\Anaconda3\Scripts\activate.bat" venv
+:: call "C:\Users\[your user name]\Anaconda3\Scripts\activate.bat" venv
 pip install -r requirements.txt
 
 
