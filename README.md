@@ -45,7 +45,7 @@ venv\Scripts\activate  # On Windows
 pip install -r requirements.txt
 ```
 
-### 4. Download model (only required on the first run)
+### 4. Download model (optional and only required on the first run)
 
 Place the required BART model files in the following folder:
 
@@ -53,7 +53,7 @@ Place the required BART model files in the following folder:
 ./app/models/bart-large-cnn/
 ```
 
-If files are missing, the backend will automatically prompt download.
+If files are missing or you would rather that the app handles the download, the backend will automatically download necessary files and put them in the above folder.
 
 ---
 
