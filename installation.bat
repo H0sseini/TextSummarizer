@@ -13,8 +13,8 @@ where python >nul 2>nul || (
 echo Creating environment and activating
 python -m venv venv
 venv\Scripts\activate
-:: conda create --name newenv python=3.10
-:: call "C:\Users\user\Anaconda3\Scripts\activate.bat" newenv
+:: conda create --name venv python=3.10
+:: call "C:\Users\user\Anaconda3\Scripts\activate.bat" venv
 pip install -r requirements.txt
 
 
