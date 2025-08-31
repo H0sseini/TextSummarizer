@@ -1,9 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Apr 21 15:30:07 2025
 
-@author: H0sseini
-"""
 import re
 import os
 import torch
@@ -63,29 +58,29 @@ class SummarizationTool:
     def __init__(self, model_path="./app/models/bart-large-cnn"):
         self.device = 0 if torch.cuda.is_available() else -1
         print(f"Device set to use {'cuda:0' if self.device == 0 else 'cpu'}")
+        
 
-        self.tokenizer = AutoTokenizer.from_pretrained(model_path, 
-                                                       model_max_length=512)
-        self.model = AutoModelForSeq2SeqLM.from_pretrained(model_path).to("cuda" if self.device == 0 else "cpu")
+        self.tokenizer = AutoTokenizer.from_pretrained(
+            model_path, model_max_length=512
+        )
+        self.model = AutoModelForSeq2SeqLM.from_pretrained(model_path).to(
+            "cuda" if self.device == 0 else "cpu"
+        )
 
         self.summarizer = pipeline(
             "summarization",
             model=self.model,
             tokenizer=self.tokenizer,
             device=self.device,
-            framework="pt",
             truncation=True,
-            max_length=200,
-            min_length=50,
-            do_sample=False,           # prevents random hallucination
-            repetition_penalty=2.0,    # discourages repeating phrases
-            length_penalty=1.0,        # balances between long/short
-            early_stopping=True
+            do_sample=False,
+            repetition_penalty=2.0,
+            length_penalty=1.0,
+            early_stopping=True,
         )
 
-        self.MAX_TOKENS = 512
-        self.MAX_VALID_LENGTH = 700
-        self.OVERLAP = 100
+        self.MAX_TOKENS = self.tokenizer.model_max_length
+        self.OVERLAP = 100  # Or self.MAX_TOKENS // 5 for proportionality
         self.mode_lengths = {
             "short": 150,
             "medium": 300,
@@ -159,114 +154,67 @@ class SummarizationTool:
     
        return chunks
 
-    def summarize_chunks(self, chunks, min_length=None, max_length=None):
-        summaries = []
-    
-        if self.device == 0:  # Using CUDA
+    def summarize_chunks(self, chunks, mode="medium"):
+       summaries = []
+       max_words = self.mode_lengths.get(mode, 300)
+       min_words = int(max_words * 0.6)
+        
+       for i, chunk in enumerate(chunks):
             try:
-                def summarize_input(texts):
-                    return self.summarizer(
-                        texts,
-                        min_length=50 if min_length is None else min_length,
-                        max_length=200 if max_length is None else max_length,
-                        truncation=True
-                    )
-    
-                dataset = Dataset.from_dict({"text": chunks})
-                results = dataset.map(
-                    lambda batch: {"summary": [s["summary_text"] for s in summarize_input(batch["text"])]},
-                    batched=True,
-                    batch_size=8
-                )
-    
-                for entry in results:
-                    summaries.extend(entry["summary"])
-    
-            except Exception as e:
-                print(f"Error in batch processing: {str(e)}")
-                # Fallback to sequential processing if batch fails
-                for i, chunk in enumerate(chunks):
-                    try:
-                        summary_output = self.summarizer(
-                            chunk,
-                            min_length=50 if min_length is None else min_length,
-                            max_length=200 if max_length is None else max_length,
-                            truncation=True
-                        )
-                        summaries.append(summary_output[0]["summary_text"])
-                    except Exception as e:
-                        print(f"[Chunk {i}] Error:", e)
-                        summaries.append("")
-        else:
-            for i, chunk in enumerate(chunks):
-                try:
-                    summary_output = self.summarizer(
-                        chunk,
-                        min_length=50 if min_length is None else min_length,
-                        max_length=200 if max_length is None else max_length,
-                        truncation=True
-                    )
-                    summaries.append(summary_output[0]["summary_text"])
-                except Exception as e:
-                    print(f"[Chunk {i}] Error:", e)
-                    summaries.append("")
-    
-         
-        return summaries
-    
-    def remove_junks(self, text):
-        # Removing junks created by the model
-        keywords = ['CNN.com', 'iReporter', 'CNN.com/Travel',   'Samaritans', 
-                    'www.samaritans.org', 'For confidential support']
-        #full_text = self.smart_join(text)
-        full_text = ''.join(text)
-        if (full_text.find(keywords[1]) - full_text.find(keywords[0]) == 21 and
-            full_text.find(keywords[2]) - full_text.find(keywords[0]) == 139):
-            full_text = full_text[:full_text.find(keywords[0])]
-        if (full_text.find(keywords[4]) - full_text.find(keywords[3]) == 69):
-            full_text = full_text[:full_text.find(keywords['For confidential support'])]
-        return full_text
+                inputs = self.tokenizer(chunk, truncation=False)
+                input_length = len(inputs["input_ids"])
+                if input_length <= 10:
+                    summaries.append(chunk)
+                    continue
+                this_max = min(max_words, input_length // 2)
+                this_min = min(min_words, this_max // 2) if this_max > 0 else 0
+                out = self.summarizer(
+                    chunk,
+                    min_length=this_min,
+                    max_length=this_max,
+                    truncation=True
+                )[0]["summary_text"]
+                summaries.append(out)
+            except Exception as err:
+                print(f"[Chunk {i}] Error: {err}")
+                summaries.append("")
+        
+       return summaries
 
-    def summarize_first_level(self, text):
+    def summarize_first_level(self, text, mode):
         text = self.clean_text(text)
         chunks = self.split_text(text)
-        summaries = self.summarize_chunks(chunks)  # No min/max lengths here
-        
+        summaries = self.summarize_chunks(chunks, mode=mode)
+        summaries = [s for s in summaries if s.strip()]  # Discard empty
         return self.remove_junks(summaries)
-        
-
-    def summarize_second_level(self, text, max_words):
+    
+    def summarize_second_level(self, text, max_words, mode):
         chunks = self.split_text(text)
         summaries = self.summarize_chunks(
             chunks,
-            min_length=int(max_words * 0.6),
-            max_length=max_words
+            mode
         )
+        #return ''.join(summaries)
         return self.remove_junks(summaries)
-        
-
-    def extractive_summarize(self, text, num_sentences=5):
-        parser = PlaintextParser.from_string(text, Tokenizer("english"))
-        summarizer = LexRankSummarizer()
-        summary = summarizer(parser.document, num_sentences)
-        return " ".join(str(sentence) for sentence in summary)
-
+    
     def summarize(self, text, mode="medium", summary_type="abstractive"):
         if summary_type == "extractive":
-            return self.extractive_summarize(text, num_sentences=5 if mode == "short" else 10)
+            return self.extractive_summarize(
+                text, num_sentences=5 if mode == "short" else 10
+            )
 
         try:
-            first_summary = self.summarize_first_level(text)
+            first_summary = self.summarize_first_level(text, mode=mode)
+            
             word_count = len(first_summary.split())
             max_words = self.mode_lengths.get(mode, 300)
-
-            if word_count <= max_words:
+            if word_count <= max_words*1.5:
                 
                 return self.add_space_after_punctuation(first_summary)
             else:
-                while word_count > max_words:
+                while word_count > max_words * 1.3:
                     try:
-                        final_summary = self.summarize_second_level(first_summary, max_words)
+                        final_summary = self.summarize_second_level(first_summary, max_words, mode)
                         word_count = len(final_summary.split())
                         first_summary = final_summary
                     
@@ -274,11 +222,62 @@ class SummarizationTool:
                         print(f"[Final Summary] Error: {e}")
                         return self.add_space_after_punctuation(first_summary)
                 
+                
                 return self.add_space_after_punctuation(final_summary)
+            
+            return self.add_space_after_punctuation(first_summary)
         except Exception as e:
             print(f"[Summarization] Error: {e}")
-            # Fallback to extractive summarization if abstractive fails
-            return self.extractive_summarize(text, num_sentences=5 if mode == "short" else 10)
+            return self.extractive_summarize(
+                text, num_sentences=5 if mode == "short" else 10
+            )
+
+    
+    def remove_junks(self, text_list_or_str):
+        # Accept both list and str
+        if isinstance(text_list_or_str, list):
+            full_text = " ".join(text_list_or_str)
+        else:
+            full_text = text_list_or_str
+    
+        # Known junk templates
+        junk_markers = [
+            "CNN.com will feature iReporter photos",
+            "Please submit your best shots of the U.S.",
+            "Visit CNN.com/Travel next Wednesday",
+            "Please share your best photos of the United States",
+            "Samaritans",
+            "www.samaritans.org",
+            "For confidential support call the Samaritans",
+            "CLICK HERE for a gallery of images from around the world",
+            "We'll feature some of the world's most beautiful photographs in our next gallery",
+            "To see the full gallery, click here: http://www.dailytribune.com",
+            "Back to Mail Online home",
+            "Follow us on Twitter @CNNOpinion and @MailOnlineCurve",
+            "Back to the page you came from",
+            "Share your thoughts on this story with the hashtag #principalproves",
+            "Click here to share your views on the story"      
+            
+        ]
+    
+        # Cut at the earliest known junk occurrence
+        min_index = len(full_text)
+        for marker in junk_markers:
+            idx = full_text.find(marker)
+            if idx != -1 and idx < min_index:
+                min_index = idx
+                if min_index != len(full_text):
+                    full_text = full_text[:min_index].strip()
+    
+        return full_text
+   
+
+    def extractive_summarize(self, text, num_sentences=5):
+        parser = PlaintextParser.from_string(text, Tokenizer("english"))
+        summarizer = LexRankSummarizer()
+        summary = summarizer(parser.document, num_sentences)
+        return " ".join(str(sentence) for sentence in summary)
+
 
     def extract_text_from_pdf(self, file_bytes):
         doc = fitz.open(stream=file_bytes, filetype="pdf")
@@ -319,4 +318,6 @@ class SummarizationTool:
 
     def extract_text_from_string(self, text_input):
         return self.clean_text(text_input)
+    
 
+    
